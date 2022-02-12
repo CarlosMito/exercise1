@@ -5,7 +5,9 @@ import java.math.BigDecimal;
 public class ClienteFisico extends Cliente {
     private String cpf;
 
-    public ClienteFisico() {
-        this.taxa = BigDecimal.valueOf(0);
+    public ClienteFisico(String endereco, String cpf) {
+        super(endereco);
+        this.cpf = cpf;
+        this.taxa = 0.0;
     }
 }

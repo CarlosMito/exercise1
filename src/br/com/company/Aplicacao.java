@@ -3,6 +3,7 @@ package br.com.company;
 import br.com.company.banco.Banco;
 import br.com.company.banco.clientes.ClienteFisico;
 import br.com.company.banco.clientes.ClienteJuridico;
+import br.com.company.banco.contas.Conta;
 import br.com.company.banco.contas.ContaCorrente;
 import br.com.company.banco.exceptions.SaldoInsuficienteException;
 
@@ -14,19 +15,23 @@ public class Aplicacao {
 
         Banco banco = new Banco();
 
-        ContaCorrente conta1 = new ContaCorrente();
-        ClienteJuridico jud1 = new ClienteJuridico();
-        ClienteFisico fis1 = new ClienteFisico();
 
-        System.out.println(conta1.getSaldo());
-        conta1.addSaldo(BigDecimal.valueOf(10.12));
+        banco.cadastrarClienteFisico("A", "123.456.678-90");  // CPF Inválido
+        banco.cadastrarClienteFisico("B", "111.111.111-11");  // CPF Inválido
+        banco.cadastrarClienteFisico("C", "222.222.222-22");  // CPF Inválido
+        banco.cadastrarClienteFisico("D", "386.880.680-62");  // CPF Válido
+        banco.cadastrarClienteFisico("E", "124.591.700-50");  // CPF Válido
+        banco.cadastrarClienteFisico("F", "333.836.400-86");  // CPF Válido
 
-        try {
-            jud1.sacar(BigDecimal.valueOf(20), conta1);
-        } catch (SaldoInsuficienteException e) {
-            System.err.println(e.getMessage());
-        }
-        System.out.println(conta1.getSaldo());
+        Conta[] contas = banco.getContas();
+
+        banco.depositar(contas[0], BigDecimal.valueOf(100.00));
+
+        System.out.println(contas[0].getSaldo());
+
+        banco.sacar(new ClienteJuridico("", ""), contas[0], BigDecimal.valueOf(50.0));
+
+        System.out.println(contas[0].getSaldo());
 
         // Depositar e Investir são muito parecidos
         // Investir = Adicionar dinheiro na Conta Investimento
