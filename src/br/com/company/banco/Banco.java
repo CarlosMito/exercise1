@@ -5,7 +5,10 @@ import br.com.company.banco.clientes.ClienteFisico;
 import br.com.company.banco.clientes.ClienteJuridico;
 import br.com.company.banco.contas.Conta;
 import br.com.company.banco.contas.ContaCorrente;
+import br.com.company.banco.contas.ContaInvestimento;
+import br.com.company.banco.contas.ContaPoupanca;
 import br.com.company.banco.exceptions.SaldoInsuficienteException;
+import br.com.company.banco.exceptions.TitularInvallidoException;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -21,19 +24,29 @@ public class Banco {
     public Banco() {
     }
 
-    public void abrirContaCorrente(Cliente cliente) {
-        // TODO: Verificar se o CPF é válido
+    public void abrirContaCorrente(Cliente titular) {
         // Talvez eu altere para essa função ser mais genérica.
         // Porém, ficar atento com os princípios SOLID
-        contas.add(new ContaCorrente(cliente));
+        contas.add(new ContaCorrente(titular));
+    }
+
+    public void abrirContaPoupanca(Cliente titular) {
+        if (titular instanceof ClienteJuridico)
+            throw new TitularInvallidoException(titular, new ContaPoupanca());
+
+        contas.add(new ContaPoupanca(titular));
+    }
+
+    public void abrirContaInvestimento(Cliente titular) {
+        contas.add(new ContaInvestimento(titular));
     }
 
     public void cadastrarClienteFisico(String endereco, String cpf) {
-        this.clientes.add(new ClienteFisico(endereco, cpf))
+        this.clientes.add(new ClienteFisico(endereco, cpf));
     }
 
     public void cadastrarClienteJuridico(String endereco, String cnpj) {
-        this.clientes.add(new ClienteJuridico(endereco, cnpj))
+        this.clientes.add(new ClienteJuridico(endereco, cnpj));
     }
 
     public Conta[] getContas() {
@@ -46,30 +59,23 @@ public class Banco {
         return this.clientes.toArray(clientes);
     }
 
-    public void abrirContaPoupanca() {
-
-    }
-
-    public void abrirContaInvestimento() {
-
-    }
-
-    public BigDecimal sacar(Cliente cliente, Conta conta, BigDecimal valor) throws SaldoInsuficienteException {
-        // TODO: Fazer a verificação se o cliente pode ou não sacar da conta
+    public BigDecimal sacar(Conta conta, double valor) throws SaldoInsuficienteException {
+        Cliente titular = conta.getTitular();
 
         // NÃO utilizar o construtor do BigDecimal para manter a precisão
-        BigDecimal taxa = BigDecimal.valueOf(cliente.getTaxa());
-        valor = valor.add(valor.multiply(taxa));
+        BigDecimal taxa = BigDecimal.valueOf(titular.getTaxaCobranca());
+        BigDecimal BDValor = BigDecimal.valueOf(valor);
+        BDValor = BDValor.add(BDValor.multiply(taxa));
 
-        if (conta.getSaldo().compareTo(valor) < 0)
-            throw new SaldoInsuficienteException(valor);
+        if (conta.getSaldo().compareTo(BDValor) < 0)
+            throw new SaldoInsuficienteException(BDValor);
 
-        conta.subtractSaldo(valor);
-        return valor;
+        conta.subtractSaldo(BDValor);
+        return BDValor;
     }
 
-    public void depositar(Conta conta, BigDecimal valor) throws SaldoInsuficienteException {
-        conta.addSaldo(valor);
+    public void depositar(Conta conta, double valor) throws SaldoInsuficienteException {
+        conta.addSaldo(BigDecimal.valueOf(valor));
     }
 
     public String getNome() {

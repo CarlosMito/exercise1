@@ -1,9 +1,14 @@
 package br.com.company.banco.contas;
 
-import java.math.BigDecimal;
+import br.com.company.banco.clientes.Cliente;
 
 public class ContaInvestimento extends Conta{
-    public ContaInvestimento() {
+    public ContaInvestimento(Cliente titular) {
         super();
+        this.titular = titular;
+    }
+
+    private void render() {
+
     }
 }

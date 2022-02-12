@@ -8,6 +8,9 @@ public class ClienteJuridico extends Cliente {
     public ClienteJuridico(String endereco, String cnpj) {
         super(endereco);
         this.cnpj = cnpj;
-        this.taxa = 0.005;
+        this.taxaCobranca = 0.005;
+
+        // 2% a mais de rendimento que o de Pessoa Física (1%)
+        this.taxaRendimento = 0.03;
     }
 }

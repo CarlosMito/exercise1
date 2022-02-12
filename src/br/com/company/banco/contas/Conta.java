@@ -27,4 +27,12 @@ public abstract class Conta {
     public void subtractSaldo(BigDecimal valor) {
         setSaldo(this.saldo.subtract(valor));
     }
+
+    public Cliente getTitular() {
+        return this.titular;
+    }
+
+    public void setTitular(Cliente titular) {
+        this.titular = titular;
+    }
 }
