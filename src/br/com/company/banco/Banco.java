@@ -18,11 +18,10 @@ import java.util.ArrayList;
 public class Banco {
     private String nome;
 
-    private final ArrayList<Conta> contas = new ArrayList<Conta>();
-    private final ArrayList<Cliente> clientes = new ArrayList<Cliente>();
+    private final ArrayList<Conta> contas = new ArrayList<>();
+    private final ArrayList<Cliente> clientes = new ArrayList<>();
 
-    public Banco() {
-    }
+    public Banco() {}
 
     public void abrirContaCorrente(Cliente titular) {
         // Talvez eu altere para essa função ser mais genérica.
@@ -59,24 +58,6 @@ public class Banco {
         return this.clientes.toArray(clientes);
     }
 
-    public BigDecimal sacar(Conta conta, double valor) throws SaldoInsuficienteException {
-        Cliente titular = conta.getTitular();
-
-        // NÃO utilizar o construtor do BigDecimal para manter a precisão
-        BigDecimal taxa = BigDecimal.valueOf(titular.getTaxaCobranca());
-        BigDecimal BDValor = BigDecimal.valueOf(valor);
-        BDValor = BDValor.add(BDValor.multiply(taxa));
-
-        if (conta.getSaldo().compareTo(BDValor) < 0)
-            throw new SaldoInsuficienteException(BDValor);
-
-        conta.subtractSaldo(BDValor);
-        return BDValor;
-    }
-
-    public void depositar(Conta conta, double valor) throws SaldoInsuficienteException {
-        conta.addSaldo(BigDecimal.valueOf(valor));
-    }
 
     public String getNome() {
         return nome;
