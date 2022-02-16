@@ -5,8 +5,8 @@ import java.math.BigDecimal;
 public class ClienteJuridico extends Cliente {
     private String cnpj;
 
-    public ClienteJuridico(String endereco, String cnpj) {
-        super(endereco);
+    public ClienteJuridico(String nome, String endereco, String cnpj) {
+        super(nome, endereco);
         this.cnpj = cnpj;
         this.taxaCobranca = 0.005;
 

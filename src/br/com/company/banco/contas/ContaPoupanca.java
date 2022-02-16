@@ -1,16 +1,16 @@
 package br.com.company.banco.contas;
 
 import br.com.company.banco.clientes.Cliente;
-
-import java.math.BigDecimal;
+import br.com.company.banco.clientes.ClienteJuridico;
+import br.com.company.banco.exceptions.TitularInvallidoException;
 
 public class ContaPoupanca extends Conta {
-    public ContaPoupanca() {
+    public ContaPoupanca(Cliente titular) throws TitularInvallidoException {
         super();
-    }
 
-    public ContaPoupanca(Cliente titular) {
-        super();
+        if (titular instanceof ClienteJuridico)
+            throw new TitularInvallidoException(titular, this);
+
         this.titular = titular;
     }
 }

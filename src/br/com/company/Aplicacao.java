@@ -1,3 +1,20 @@
+/**
+ * Este programa simula uma aplicação bancária.
+ *
+ * Funcionalidades:
+ *   [x] Abertura de conta;
+ *   [x] Saque;
+ *   [x] Depósito;
+ *   [x] Transferência;
+ *   [x] Investimento;
+ *   [x] Consulta de saldo.
+ *
+ * Autor: Carlos Mito
+ *
+ * Algumas considerações foram deixadas nos comentários para auxiliar na correção do projeto.
+ *
+ */
+
 package br.com.company;
 
 import br.com.company.banco.Banco;
@@ -7,44 +24,45 @@ import br.com.company.banco.clientes.ClienteJuridico;
 import br.com.company.banco.contas.Conta;
 import br.com.company.banco.contas.ContaCorrente;
 import br.com.company.banco.contas.ContaInvestimento;
+import br.com.company.banco.contas.ContaPoupanca;
 import br.com.company.banco.exceptions.SaldoInsuficienteException;
+import br.com.company.banco.exceptions.TitularInvallidoException;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 
 public class Aplicacao {
     public static void main(String[] args) {
+        test();
+    }
+
+    public static void test() {
         Banco banco = new Banco();
 
-        banco.cadastrarClienteFisico("A", "2022");            // CPF Inválido
-        banco.cadastrarClienteFisico("B", "123.456.678-90");  // CPF Inválido
-        banco.cadastrarClienteFisico("C", "111.111.111-11");  // CPF Inválido
-        banco.cadastrarClienteFisico("D", "386.880.680-62");  // CPF Válido
-        banco.cadastrarClienteFisico("E", "124.591.700-50");  // CPF Válido
-        banco.cadastrarClienteFisico("F", "33383640086");     // CPF Válido
+        Cliente[] clientes = {
+                new ClienteFisico("A", "-", "2022"),                  // CPF Inválido
+                new ClienteFisico("B", "-", "123.456.678-90"),        // CPF Inválido
+                new ClienteFisico("C", "-", "111.111.111-11"),        // CPF Inválido
+                new ClienteFisico("D", "-", "386.880.680-62"),        // CPF Válido
+                new ClienteFisico("E", "-", "124.591.700-50"),        // CPF Válido
+                new ClienteFisico("F", "-", "33383640086"),           // CPF Válido
 
-        banco.cadastrarClienteJuridico("G", "12459170050");         // CNPJ Inválido
-        banco.cadastrarClienteJuridico("H", "11.111.111/1111-11");  // CNPJ Inválido
-        banco.cadastrarClienteJuridico("I", "12.345.567/8901-23");  // CNPJ Inválido
-        banco.cadastrarClienteJuridico("J", "96.942.846/0001-10");  // CNPJ Válido
-        banco.cadastrarClienteJuridico("K", "25.133.454/0001-61");  // CNPJ Válido
-        banco.cadastrarClienteJuridico("L", "55206945000156");      // CNPJ Válido
+                new ClienteJuridico("G", "-", "12459170050"),         // CNPJ Inválido
+                new ClienteJuridico("H", "-", "11.111.111/1111-11"),  // CNPJ Inválido
+                new ClienteJuridico("I", "-", "12.345.567/8901-23"),  // CNPJ Inválido
+                new ClienteJuridico("J", "-", "96.942.846/0001-10"),  // CNPJ Válido
+                new ClienteJuridico("K", "-", "25.133.454/0001-61"),  // CNPJ Válido
+                new ClienteJuridico("L", "-", "55206945000156")       // CNPJ Válido
+        };
 
-        Cliente[] clientes = banco.getClientes();
+        for (int i = 0; i < clientes.length; i += 3) {
+            banco.abrirConta(new ContaCorrente(clientes[i]));
 
+            // Evita que um ClienteJuridico abra uma ContaPoupanca
+            banco.abrirConta(i < 6 ? new ContaPoupanca(clientes[i + 1]) : new ContaInvestimento(clientes[i + 1]));
 
-        // Clientes Físicos
-        banco.abrirContaCorrente(clientes[0]);
-        banco.abrirContaCorrente(clientes[1]);
-        banco.abrirContaPoupanca(clientes[2]);
-        banco.abrirContaPoupanca(clientes[3]);
-        banco.abrirContaInvestimento(clientes[4]);
-        banco.abrirContaInvestimento(clientes[5]);
-
-        // Clientes Jurídicos
-        banco.abrirContaCorrente(clientes[6]);
-//        banco.abrirContaPoupanca(clientes[7]);  // Vai lançar uma exceção, pois PJ não abre CP
-        banco.abrirContaInvestimento(clientes[8]);
-        banco.abrirContaCorrente(clientes[9]);
+            banco.abrirConta(new ContaInvestimento(clientes[i + 2]));
+        }
 
         Conta[] contas = banco.getContas();
 
@@ -60,23 +78,23 @@ public class Aplicacao {
         System.out.println(contas[0].getSaldo());
         System.out.println(contas[6].getSaldo());
 
-        ContaInvestimento cinv1 = (ContaInvestimento) contas[4];
-        ContaInvestimento cinv2 = (ContaInvestimento) contas[5];
-        ContaInvestimento cinv3 = (ContaInvestimento) contas[7];
+        ContaInvestimento investimento1 = (ContaInvestimento) contas[2];
+        ContaInvestimento investimento2 = (ContaInvestimento) contas[5];
+        ContaInvestimento investimento3 = (ContaInvestimento) contas[8];
 
-        cinv1.depositar(100.00);
-        cinv2.depositar(100.00);
-        cinv3.depositar(100.00);
+        investimento1.depositar(100.00);
+        investimento2.depositar(100.00);
+        investimento3.depositar(100.00);
 
-        cinv1.investir(100.0);
-        cinv2.investir(100.0);
-        cinv3.investir(100.0);
-        cinv3.investir(103.0);
-        cinv3.investir(106.09);
+        investimento1.investir(100.0);
+        investimento2.investir(100.0);
+        investimento3.investir(100.0);
+        investimento3.investir(103.0);
+        investimento3.investir(106.09);
 
-        cinv1.consultarSaldo();
-        cinv2.consultarSaldo();
-        cinv3.consultarSaldo();
+        investimento1.consultarSaldo();
+        investimento2.consultarSaldo();
+        investimento3.consultarSaldo();
 
         // Depositar e Investir são muito parecidos
         // Investir = Adicionar dinheiro na Conta Investimento
