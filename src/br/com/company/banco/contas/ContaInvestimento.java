@@ -23,6 +23,7 @@ public class ContaInvestimento extends Conta implements Investivel {
 
     public void investir(BigDecimal valor) {
         BigDecimal taxa = BigDecimal.valueOf(this.titular.getTaxaRendimento());
-        this.setSaldo(taxa.multiply(valor).add(valor));
+        BigDecimal investimento = taxa.multiply(valor).add(valor);
+        this.setSaldo(this.saldo.add(investimento));
     }
 }
