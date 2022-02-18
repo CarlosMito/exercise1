@@ -2,22 +2,27 @@ package br.com.company.banco.contas;
 
 import br.com.company.banco.clientes.Cliente;
 import br.com.company.banco.exceptions.SaldoInsuficienteException;
+import br.com.company.banco.interfaces.Investivel;
 
 import java.math.BigDecimal;
 
-public class ContaInvestimento extends Conta{
+public class ContaInvestimento extends Conta implements Investivel {
+
+    public ContaInvestimento() {
+        super();
+    }
+
     public ContaInvestimento(Cliente titular) {
         super();
         this.titular = titular;
     }
 
-    public void investir(double valor) throws SaldoInsuficienteException {
-        BigDecimal BDValor = BigDecimal.valueOf(valor);
+    public void investir(double valor) {
+        this.investir(BigDecimal.valueOf(valor));
+    }
 
-        if (this.saldo.compareTo(BDValor) < 0)
-            throw new SaldoInsuficienteException(BDValor);
-
+    public void investir(BigDecimal valor) {
         BigDecimal taxa = BigDecimal.valueOf(this.titular.getTaxaRendimento());
-        this.depositar(taxa.multiply(BigDecimal.valueOf(valor)));
+        this.setSaldo(taxa.multiply(valor).add(valor));
     }
 }

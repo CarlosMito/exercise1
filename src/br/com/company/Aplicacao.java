@@ -27,6 +27,7 @@ import br.com.company.banco.contas.ContaInvestimento;
 import br.com.company.banco.contas.ContaPoupanca;
 import br.com.company.banco.exceptions.SaldoInsuficienteException;
 import br.com.company.banco.exceptions.TitularInvallidoException;
+import br.com.company.banco.interfaces.Movimentavel;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -66,25 +67,28 @@ public class Aplicacao {
 
         Conta[] contas = banco.getContas();
 
-        contas[0].depositar(100.00);
-        contas[0].sacar(50.00);
+        ContaCorrente corrente = (ContaCorrente) contas[0];
+        ContaPoupanca poupanca = (ContaPoupanca) contas[4];
 
-        contas[6].depositar(100.00);
-        contas[6].sacar(50.00);
+        corrente.depositar(100.00);
+        corrente.sacar(50.00);
+
+        poupanca.depositar(100.00);
+        poupanca.sacar(50.00);
 
         System.out.println(contas[0].getSaldo());
-        System.out.println(contas[6].getSaldo());
-        contas[6].transferir(contas[0], 10.0);
+        System.out.println(contas[4].getSaldo());
+        contas[4].transferir(contas[0], 10.0);
         System.out.println(contas[0].getSaldo());
-        System.out.println(contas[6].getSaldo());
+        System.out.println(contas[4].getSaldo());
 
         ContaInvestimento investimento1 = (ContaInvestimento) contas[2];
         ContaInvestimento investimento2 = (ContaInvestimento) contas[5];
         ContaInvestimento investimento3 = (ContaInvestimento) contas[8];
 
-        investimento1.depositar(100.00);
-        investimento2.depositar(100.00);
-        investimento3.depositar(100.00);
+//        investimento1.depositar(100.00);
+//        investimento2.depositar(100.00);
+//        investimento3.depositar(100.00);
 
         investimento1.investir(100.0);
         investimento2.investir(100.0);

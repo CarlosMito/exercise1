@@ -2,10 +2,11 @@ package br.com.company.banco.contas;
 
 import br.com.company.banco.clientes.Cliente;
 import br.com.company.banco.exceptions.SaldoInsuficienteException;
+import br.com.company.banco.interfaces.Movimentavel;
 
 import java.math.BigDecimal;
 
-public abstract class Conta {
+public abstract class Conta implements Movimentavel {
     protected BigDecimal saldo;
     protected Cliente titular;
 
@@ -28,18 +29,19 @@ public abstract class Conta {
     public void consultarSaldo() {
         System.out.printf("Saldo: R$%.2f\n" , this.saldo);
     }
-
-    public void depositar(double valor) {
-        this.saldo = this.saldo.add(BigDecimal.valueOf(valor));
-    }
-
-    public void depositar(BigDecimal valor) {
-        this.saldo = this.saldo.add(valor);
-    }
+//
+//    public void depositar(double valor) {
+//        this.depositar(BigDecimal.valueOf(valor));
+//    }
+//
+//    public void depositar(BigDecimal valor) {
+//        this.saldo = this.saldo.add(valor);
+//    }
 
     public void transferir(Conta favorecido, double valor) {
         this.sacar(valor);
-        favorecido.depositar(valor);
+        BigDecimal saldo = favorecido.getSaldo();
+        favorecido.setSaldo(saldo.add(BigDecimal.valueOf(valor)));
     }
 
     public BigDecimal getSaldo() {
@@ -48,14 +50,6 @@ public abstract class Conta {
 
     public void setSaldo(BigDecimal saldo) {
         this.saldo = saldo;
-    }
-
-    public void addSaldo(BigDecimal valor) {
-        setSaldo(this.saldo.add(valor));
-    }
-
-    public void subtractSaldo(BigDecimal valor) {
-        setSaldo(this.saldo.subtract(valor));
     }
 
     public Cliente getTitular() {
