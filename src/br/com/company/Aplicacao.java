@@ -33,8 +33,10 @@ public class Aplicacao {
 
         abrirContaParaCadaCliente(banco, gerarClientes());
 
-        banco.getContas("a");
+        Conta[] contas = banco.getContasFiltrandoPor((Conta c) -> c instanceof ContaCorrente);
 
+        for (Conta c : contas)
+            System.out.println(c.getClass());
     }
 
     public static Cliente[] gerarClientes() {

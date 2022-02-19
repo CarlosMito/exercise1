@@ -2,6 +2,7 @@ package br.com.company.banco.contas;
 
 import br.com.company.banco.clientes.Cliente;
 import br.com.company.banco.exceptions.ContaSemTitularException;
+import br.com.company.banco.exceptions.OperacaoComValorNegativoException;
 import br.com.company.banco.exceptions.SaldoInsuficienteException;
 import br.com.company.banco.interfaces.Movimentavel;
 
@@ -27,6 +28,8 @@ public abstract class Conta implements Movimentavel {
 
     @Override
     public void remover(BigDecimal valor) {
+        this.verificarValorNegativo(valor);
+
         BigDecimal taxa = BigDecimal.valueOf(this.titular.getTaxaCobranca());
         valor = valor.add(valor.multiply(taxa));
 
@@ -36,10 +39,6 @@ public abstract class Conta implements Movimentavel {
         this.saldo = this.saldo.subtract(valor);
     }
 
-    public void consultarSaldo() {
-        System.out.printf("Saldo: R$%.2f\n" , this.saldo);
-    }
-
     @Override
     public void transferir(Conta favorecido, double valor) {
         this.transferir(favorecido, BigDecimal.valueOf(valor));
@@ -47,9 +46,20 @@ public abstract class Conta implements Movimentavel {
 
     @Override
     public void transferir(Conta favorecido, BigDecimal valor) {
+        verificarValorNegativo(valor);
+
         this.remover(valor);
         BigDecimal saldo = favorecido.getSaldo();
         favorecido.setSaldo(saldo.add(valor));
+    }
+
+    protected static void verificarValorNegativo(BigDecimal valor) {
+        if (valor.compareTo(BigDecimal.valueOf(0)) < 0)
+            throw new OperacaoComValorNegativoException();
+    }
+
+    public void consultarSaldo() {
+        System.out.printf("Saldo: R$%.2f\n" , this.saldo);
     }
 
     public BigDecimal getSaldo() {
@@ -67,4 +77,6 @@ public abstract class Conta implements Movimentavel {
     public void setTitular(Cliente titular) {
         this.titular = titular;
     }
+
+    // TODO: Adicioanar toString
 }

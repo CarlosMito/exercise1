@@ -15,10 +15,8 @@ import java.lang.reflect.Constructor;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 
-import java.lang.reflect.Constructor;
 import java.util.List;
-import java.util.function.IntFunction;
-import java.util.stream.Collectors;
+import java.util.function.Predicate;
 
 public class Banco {
     private String nome;
@@ -44,16 +42,10 @@ public class Banco {
         return this.contas.toArray(contas);
     }
 
-    public Conta[] getContas(String a) {
-        Conta[] contasFiltradas = this.contas.stream()
-                .filter(conta -> conta instanceof ContaCorrente)
+    public Conta[] getContasFiltrandoPor(Predicate<? super Conta> filter) {
+        return this.contas.stream()
+                .filter(filter)
                 .toArray(Conta[]::new);
-
-        for (Conta c : contasFiltradas)
-            System.out.println(c.getClass());
-
-        Conta[] contas = new Conta[this.contas.size()];
-        return this.contas.toArray(contas);
     }
 
     public Cliente[] getClientes() {

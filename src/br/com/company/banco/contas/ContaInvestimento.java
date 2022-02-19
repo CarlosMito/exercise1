@@ -17,6 +17,8 @@ public class ContaInvestimento extends Conta {
 
     @Override
     public void adicionar(BigDecimal valor) {
+        verificarValorNegativo(valor);
+
         BigDecimal taxa = BigDecimal.valueOf(this.titular.getTaxaRendimento());
         BigDecimal investimento = taxa.multiply(valor).add(valor);
         this.setSaldo(this.saldo.add(investimento));
