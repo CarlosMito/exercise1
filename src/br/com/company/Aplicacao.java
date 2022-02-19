@@ -25,22 +25,20 @@ import br.com.company.banco.contas.Conta;
 import br.com.company.banco.contas.ContaCorrente;
 import br.com.company.banco.contas.ContaInvestimento;
 import br.com.company.banco.contas.ContaPoupanca;
-import br.com.company.banco.exceptions.SaldoInsuficienteException;
-import br.com.company.banco.exceptions.TitularInvallidoException;
-import br.com.company.banco.interfaces.Movimentavel;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
 
 public class Aplicacao {
     public static void main(String[] args) {
-        test();
-    }
-
-    public static void test() {
         Banco banco = new Banco();
 
-        Cliente[] clientes = {
+        abrirContaParaCadaCliente(banco, gerarClientes());
+
+        banco.getContas("a");
+
+    }
+
+    public static Cliente[] gerarClientes() {
+        return new Cliente[] {
                 new ClienteFisico("A", "-", "2022"),                  // CPF Inválido
                 new ClienteFisico("B", "-", "123.456.678-90"),        // CPF Inválido
                 new ClienteFisico("C", "-", "111.111.111-11"),        // CPF Inválido
@@ -55,7 +53,9 @@ public class Aplicacao {
                 new ClienteJuridico("K", "-", "25.133.454/0001-61"),  // CNPJ Válido
                 new ClienteJuridico("L", "-", "55206945000156")       // CNPJ Válido
         };
+    }
 
+    public static void abrirContaParaCadaCliente(Banco banco, Cliente[] clientes) {
         for (int i = 0; i < clientes.length; i += 3) {
             banco.abrirConta(new ContaCorrente(clientes[i]));
 
@@ -64,17 +64,38 @@ public class Aplicacao {
 
             banco.abrirConta(new ContaInvestimento(clientes[i + 2]));
         }
+    }
+
+    public static void testarDeposito(Conta[] contas) {
+
+    }
+
+    public static void testarInvestimento(Conta[] contas) {
+
+    }
+
+    public static void testarSaque(Conta[] contas) {
+
+    }
+
+    public static void testarTransferencia(Conta[] contas) {
+
+    }
+
+    public static void test() {
+        Banco banco = new Banco();
+
 
         Conta[] contas = banco.getContas();
 
         ContaCorrente corrente = (ContaCorrente) contas[0];
         ContaPoupanca poupanca = (ContaPoupanca) contas[4];
 
-        corrente.depositar(100.00);
-        corrente.sacar(50.00);
+        corrente.adicionar(100.00);
+        corrente.remover(50.00);
 
-        poupanca.depositar(100.00);
-        poupanca.sacar(50.00);
+        poupanca.adicionar(100.00);
+        poupanca.remover(50.00);
 
         System.out.println(contas[0].getSaldo());
         System.out.println(contas[4].getSaldo());
@@ -86,15 +107,11 @@ public class Aplicacao {
         ContaInvestimento investimento2 = (ContaInvestimento) contas[5];
         ContaInvestimento investimento3 = (ContaInvestimento) contas[8];
 
-//        investimento1.depositar(100.00);
-//        investimento2.depositar(100.00);
-//        investimento3.depositar(100.00);
-
-        investimento1.investir(100.0);
-        investimento2.investir(100.0);
-        investimento3.investir(100.0);
-        investimento3.investir(103.0);
-        investimento3.investir(106.09);
+        investimento1.adicionar(100.0);
+        investimento2.adicionar(100.0);
+        investimento3.adicionar(100.0);
+        investimento3.adicionar(103.0);
+        investimento3.adicionar(106.09);
 
         investimento1.consultarSaldo();
         investimento2.consultarSaldo();

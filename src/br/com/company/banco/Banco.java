@@ -17,6 +17,8 @@ import java.util.ArrayList;
 
 import java.lang.reflect.Constructor;
 import java.util.List;
+import java.util.function.IntFunction;
+import java.util.stream.Collectors;
 
 public class Banco {
     private String nome;
@@ -38,6 +40,18 @@ public class Banco {
     }
 
     public Conta[] getContas() {
+        Conta[] contas = new Conta[this.contas.size()];
+        return this.contas.toArray(contas);
+    }
+
+    public Conta[] getContas(String a) {
+        Conta[] contasFiltradas = this.contas.stream()
+                .filter(conta -> conta instanceof ContaCorrente)
+                .toArray(Conta[]::new);
+
+        for (Conta c : contasFiltradas)
+            System.out.println(c.getClass());
+
         Conta[] contas = new Conta[this.contas.size()];
         return this.contas.toArray(contas);
     }
