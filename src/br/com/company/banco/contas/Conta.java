@@ -19,11 +19,13 @@ public abstract class Conta implements Movimentavel {
         this.saldo = BigDecimal.valueOf(0);
     }
 
+    @Override
     public void remover(double valor) throws SaldoInsuficienteException {
         // NÃO utilizar o construtor do BigDecimal (para manter a precisão)
         this.remover(BigDecimal.valueOf(valor));
     }
 
+    @Override
     public void remover(BigDecimal valor) {
         BigDecimal taxa = BigDecimal.valueOf(this.titular.getTaxaCobranca());
         valor = valor.add(valor.multiply(taxa));
@@ -38,10 +40,12 @@ public abstract class Conta implements Movimentavel {
         System.out.printf("Saldo: R$%.2f\n" , this.saldo);
     }
 
+    @Override
     public void transferir(Conta favorecido, double valor) {
         this.transferir(favorecido, BigDecimal.valueOf(valor));
     }
 
+    @Override
     public void transferir(Conta favorecido, BigDecimal valor) {
         this.remover(valor);
         BigDecimal saldo = favorecido.getSaldo();

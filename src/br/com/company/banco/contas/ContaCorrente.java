@@ -11,10 +11,12 @@ public class ContaCorrente extends Conta {
         super(titular);
     }
 
+    @Override
     public void adicionar(double valor) {
         this.adicionar(BigDecimal.valueOf(valor));
     }
 
+    @Override
     public void adicionar(BigDecimal valor) {
         this.saldo = this.saldo.add(valor);
     }

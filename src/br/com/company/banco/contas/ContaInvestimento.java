@@ -10,10 +10,12 @@ public class ContaInvestimento extends Conta {
         super(titular);
     }
 
+    @Override
     public void adicionar(double valor) {
         this.adicionar(BigDecimal.valueOf(valor));
     }
 
+    @Override
     public void adicionar(BigDecimal valor) {
         BigDecimal taxa = BigDecimal.valueOf(this.titular.getTaxaRendimento());
         BigDecimal investimento = taxa.multiply(valor).add(valor);
