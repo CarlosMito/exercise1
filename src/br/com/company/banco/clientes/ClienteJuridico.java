@@ -13,4 +13,17 @@ public class ClienteJuridico extends Cliente {
         // 2% a mais de rendimento que o de Pessoa Física (1%)
         this.taxaRendimento = 0.1;
     }
+
+    @Override
+    public String toString() {
+        return "CLIENTE JURÍDICO\n" + "CNPJ: " + this.cnpj + '\n' + super.toString();
+    }
+
+    public String getCnpj() {
+        return cnpj;
+    }
+
+    public void setCnpj(String cnpj) {
+        this.cnpj = cnpj;
+    }
 }

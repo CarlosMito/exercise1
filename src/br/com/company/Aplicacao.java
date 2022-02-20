@@ -1,17 +1,20 @@
 /**
- * Este programa simula uma aplicação bancária.
+ * Autor: Carlos Mito
+ * Este programa simula uma aplicação bancária (beeem) simplificada.
  *
  * Funcionalidades:
- *   [x] Abertura de conta;
- *   [x] Saque;
- *   [x] Depósito;
- *   [x] Transferência;
- *   [x] Investimento;
- *   [x] Consulta de saldo.
+ *   - Abertura de conta;
+ *   - Saque;
+ *   - Depósito;
+ *   - Transferência;
+ *   - Investimento;
+ *   - Consulta de saldo.
  *
- * Autor: Carlos Mito
+ * As funções implementadas na classe [Aplicacao] foram criadas, exclusivamente,
+ * para demonstrar as funcionalidades do banco como um todo.
  *
- * Algumas considerações foram deixadas nos comentários para auxiliar na correção do projeto.
+ * Algumas considerações adicionais foram deixadas nos comentários do código
+ * para auxiliar na correção do projeto e na avaliação pelo professor.
  *
  */
 
@@ -27,6 +30,8 @@ import br.com.company.banco.contas.ContaInvestimento;
 import br.com.company.banco.contas.ContaPoupanca;
 import br.com.company.banco.exceptions.*;
 
+import java.lang.instrument.Instrumentation;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -41,11 +46,7 @@ public class Aplicacao {
 
         Conta[] contas = banco.getContas();
 
-        Conta[] correntes = banco.getContasFiltrandoPor((Conta c) -> c instanceof ContaCorrente);
-        Conta[] poupancas = banco.getContasFiltrandoPor((Conta c) -> c instanceof ContaPoupanca);
-        Conta[] investimentos = banco.getContasFiltrandoPor((Conta c) -> c instanceof ContaInvestimento);
-
-        Conta ultimaConta = contas.length > 0 ? contas[0] : null;
+        Conta ultimaConta = contas[0];
 
         for (Conta conta : contas) {
             testarDepositoInvestimento(conta, 100.0);
@@ -60,6 +61,7 @@ public class Aplicacao {
         testarDepositoInvestimento(contas[0], -1000.0);
         testarSaque(contas[0], -10.0);
         testarTransferencia(contas[0], contas[1], -50.0);
+        testarTransferencia(contas[0], contas[1], 1000.0);
     }
 
     public static Cliente[] gerarClientes() {
@@ -120,22 +122,34 @@ public class Aplicacao {
         imprimirCabecalho("TESTE DEPÓSITO/INVESTIMENTO");
         imprimirInfoContas(new Conta[] {conta});
 
-        System.out.println("Saldo inicial: " + conta.getSaldoFormatado());
+        System.out.println("Saldo inicial: " + conta.getSaldoFormatado() + '\b');
         System.out.printf("%s R$%.2f\n", operacao.get(conta.getClass()), valor);
-        try { conta.adicionar(valor); }
-        catch (OperacaoComValorNegativoException e) { System.out.println(e.getMessage()); }
-        System.out.println("Saldo final: " + conta.getSaldoFormatado());
+
+        try {
+            conta.adicionar(valor);
+            System.out.println("Operação realizada com sucesso!");
+        } catch (OperacaoComValorNegativoException e) {
+            System.out.println("ERRO: " + e.getMessage());
+        }
+
+        System.out.println("\nSaldo final: " + conta.getSaldoFormatado());
     }
 
     public static void testarSaque(Conta conta, double valor) {
         imprimirCabecalho("TESTE SAQUE");
         imprimirInfoContas(new Conta[] {conta});
 
-        System.out.println("Saldo inicial: " + conta.getSaldoFormatado());
+        System.out.println("Saldo inicial: " + conta.getSaldoFormatado() + '\n');
         System.out.printf("Sacando R$%.2f\n", valor);
-        try { conta.remover(valor); }
-        catch (SaldoInsuficienteException | OperacaoComValorNegativoException e) { System.out.println(e.getMessage()); }
-        System.out.println("Saldo final: " + conta.getSaldoFormatado());
+
+        try {
+            conta.remover(valor);
+            System.out.println("Operação realizada com sucesso!");
+        } catch (SaldoInsuficienteException | OperacaoComValorNegativoException e) {
+            System.out.println("ERRO: " + e.getMessage());
+        }
+
+        System.out.println("\nSaldo final: " + conta.getSaldoFormatado());
     }
 
     public static void testarTransferencia(Conta debitado, Conta favorecido, double valor) {
@@ -143,15 +157,18 @@ public class Aplicacao {
         imprimirInfoContas(new Conta[] {debitado, favorecido});
 
         System.out.println("Saldo inicial (DEBITADO): " + debitado.getSaldoFormatado());
-        System.out.println("Saldo inicial (FAVORECIDO): " + favorecido.getSaldoFormatado());
+        System.out.println("Saldo inicial (FAVORECIDO): " + favorecido.getSaldoFormatado() + '\n');
         System.out.printf("Transferindo R$%.2f (%s para %s)\n", valor, debitado.getTitular().getNome(), favorecido.getTitular().getNome());
-        try { debitado.transferir(favorecido, valor); }
-        catch (SaldoInsuficienteException |
-               OperacaoComValorNegativoException |
-               TransferenciaParaMesmaContaException e) {
-            System.out.println(e.getMessage());
+
+        try {
+            debitado.transferir(favorecido, valor);
+            System.out.println("Operação realizada com sucesso!");
         }
-        System.out.println("Saldo final (DEBITADO): " + debitado.getSaldoFormatado());
+        catch (SaldoInsuficienteException | OperacaoComValorNegativoException | TransferenciaParaMesmaContaException e) {
+            System.out.println("ERRO: " + e.getMessage());
+        }
+
+        System.out.println("\nSaldo final (DEBITADO): " + debitado.getSaldoFormatado());
         System.out.println("Saldo final (FAVORECIDO): " + favorecido.getSaldoFormatado());
     }
 }

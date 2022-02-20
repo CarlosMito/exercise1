@@ -23,4 +23,9 @@ public class ContaInvestimento extends Conta {
         BigDecimal investimento = taxa.multiply(valor).add(valor);
         this.setSaldo(this.saldo.add(investimento));
     }
+
+    @Override
+    public String toString() {
+        return "CONTA INVESTIMENTO\n" + super.toString();
+    }
 }

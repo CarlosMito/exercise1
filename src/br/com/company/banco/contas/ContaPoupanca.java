@@ -16,22 +16,15 @@ public class ContaPoupanca extends Conta {
     }
 
     @Override
-    public void adicionar(double valor) {
-        this.adicionar(BigDecimal.valueOf(valor));
-    }
-
-    @Override
-    public void adicionar(BigDecimal valor) {
-        bloquearValorNegativo(valor);
-
-        this.saldo = this.saldo.add(valor);
-    }
-
-    @Override
     public void setTitular(Cliente titular) throws TitularInvallidoException {
         if (titular instanceof ClienteJuridico)
             throw new TitularInvallidoException(titular, this);
 
         this.titular = titular;
+    }
+
+    @Override
+    public String toString() {
+        return "CONTA POUPANCA\n" + super.toString();
     }
 }

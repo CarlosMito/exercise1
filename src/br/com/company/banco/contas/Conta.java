@@ -1,6 +1,7 @@
 package br.com.company.banco.contas;
 
 import br.com.company.banco.clientes.Cliente;
+import br.com.company.banco.clientes.ClienteFisico;
 import br.com.company.banco.exceptions.*;
 import br.com.company.banco.interfaces.Movimentavel;
 
@@ -54,7 +55,18 @@ public abstract class Conta implements Movimentavel {
         favorecido.setSaldo(saldo.add(valor));
     }
 
-    // Talvez trocar o nome dessa função para barrarOperacaoComValorNegativo ou algo do tipo
+    @Override
+    public void adicionar(double valor) {
+        this.adicionar(BigDecimal.valueOf(valor));
+    }
+
+    @Override
+    public void adicionar(BigDecimal valor) {
+        bloquearValorNegativo(valor);
+
+        this.saldo = this.saldo.add(valor);
+    }
+
     protected static void bloquearValorNegativo(BigDecimal valor) {
         if (valor.compareTo(BigDecimal.valueOf(0)) < 0)
             throw new OperacaoComValorNegativoException();
@@ -80,5 +92,10 @@ public abstract class Conta implements Movimentavel {
         this.titular = titular;
     }
 
-    // TODO: Adicioanar toString
+    @Override
+    public String toString() {
+        return "Titular: " + this.titular.getNome() + '\n' +
+                "Saldo: " + this.getSaldoFormatado();
+    }
+
 }

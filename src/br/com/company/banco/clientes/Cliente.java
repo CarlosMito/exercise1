@@ -2,7 +2,8 @@ package br.com.company.banco.clientes;
 
 public abstract class Cliente {
     protected String nome;
-    protected String endereco;           // Talvez subdividir em campos, ou criar um tipo próprio
+    protected String endereco;
+
     protected double taxaCobranca;       // A taxa NÃO está em %
     protected double taxaRendimento;     // A taxa NÃO está em %
 
@@ -11,7 +12,15 @@ public abstract class Cliente {
         this.endereco = endereco;
     }
 
-    // TODO: Rever encapsulamento dos getters e setters de instâncias
+    // TODO: Remover importações inúteis e adicionar comentários úteis
+
+    @Override
+    public String toString() {
+        return "Nome: " + this.nome + '\n' +
+                "Endereco: " + this.endereco + '\n' +
+                "Taxa de Cobrança: " + this.taxaCobranca * 100 + "%\n" +
+                "Taxa de Rendimento: " + this.taxaRendimento * 100 + "%";
+    }
 
     public String getNome() {
         return this.nome;

@@ -38,8 +38,7 @@ public class Banco {
     }
 
     public Conta[] getContas() {
-        Conta[] contas = new Conta[this.contas.size()];
-        return this.contas.toArray(contas);
+        return this.contas.toArray(Conta[]::new);
     }
 
     public Conta[] getContasFiltrandoPor(Predicate<? super Conta> filter) {
@@ -49,8 +48,7 @@ public class Banco {
     }
 
     public Cliente[] getClientes() {
-        Cliente[] clientes = new Cliente[this.clientes.size()];
-        return this.clientes.toArray(clientes);
+        return this.clientes.toArray(Cliente[]::new);
     }
 
     public String getNome() {
