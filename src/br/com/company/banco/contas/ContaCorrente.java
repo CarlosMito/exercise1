@@ -18,7 +18,7 @@ public class ContaCorrente extends Conta {
 
     @Override
     public void adicionar(BigDecimal valor) {
-        verificarValorNegativo(valor);
+        bloquearValorNegativo(valor);
 
         this.saldo = this.saldo.add(valor);
     }

@@ -11,6 +11,6 @@ public class ClienteJuridico extends Cliente {
         this.taxaCobranca = 0.005;
 
         // 2% a mais de rendimento que o de Pessoa Física (1%)
-        this.taxaRendimento = 0.03;
+        this.taxaRendimento = 0.1;
     }
 }

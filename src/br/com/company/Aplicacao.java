@@ -25,6 +25,12 @@ import br.com.company.banco.contas.Conta;
 import br.com.company.banco.contas.ContaCorrente;
 import br.com.company.banco.contas.ContaInvestimento;
 import br.com.company.banco.contas.ContaPoupanca;
+import br.com.company.banco.exceptions.*;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 
 
 public class Aplicacao {
@@ -33,93 +39,119 @@ public class Aplicacao {
 
         abrirContaParaCadaCliente(banco, gerarClientes());
 
-        Conta[] contas = banco.getContasFiltrandoPor((Conta c) -> c instanceof ContaCorrente);
+        Conta[] contas = banco.getContas();
 
-        for (Conta c : contas)
-            System.out.println(c.getClass());
+        Conta[] correntes = banco.getContasFiltrandoPor((Conta c) -> c instanceof ContaCorrente);
+        Conta[] poupancas = banco.getContasFiltrandoPor((Conta c) -> c instanceof ContaPoupanca);
+        Conta[] investimentos = banco.getContasFiltrandoPor((Conta c) -> c instanceof ContaInvestimento);
+
+        Conta ultimaConta = contas.length > 0 ? contas[0] : null;
+
+        for (Conta conta : contas) {
+            testarDepositoInvestimento(conta, 100.0);
+            testarSaque(conta, 100.0);
+
+            conta.adicionar(100.0);
+
+            testarTransferencia(conta, ultimaConta, 50.0);
+            ultimaConta = conta;
+        }
+
+        testarDepositoInvestimento(contas[0], -1000.0);
+        testarSaque(contas[0], -10.0);
+        testarTransferencia(contas[0], contas[1], -50.0);
     }
 
     public static Cliente[] gerarClientes() {
         return new Cliente[] {
-                new ClienteFisico("A", "-", "2022"),                  // CPF Inválido
-                new ClienteFisico("B", "-", "123.456.678-90"),        // CPF Inválido
-                new ClienteFisico("C", "-", "111.111.111-11"),        // CPF Inválido
-                new ClienteFisico("D", "-", "386.880.680-62"),        // CPF Válido
-                new ClienteFisico("E", "-", "124.591.700-50"),        // CPF Válido
-                new ClienteFisico("F", "-", "33383640086"),           // CPF Válido
-
-                new ClienteJuridico("G", "-", "12459170050"),         // CNPJ Inválido
-                new ClienteJuridico("H", "-", "11.111.111/1111-11"),  // CNPJ Inválido
-                new ClienteJuridico("I", "-", "12.345.567/8901-23"),  // CNPJ Inválido
-                new ClienteJuridico("J", "-", "96.942.846/0001-10"),  // CNPJ Válido
-                new ClienteJuridico("K", "-", "25.133.454/0001-61"),  // CNPJ Válido
-                new ClienteJuridico("L", "-", "55206945000156")       // CNPJ Válido
+                new ClienteFisico("Amanda", "A", "386.880.680-62"),
+                new ClienteFisico("Bruno", "B", "124.591.700-50"),
+                new ClienteFisico("Carlos", "C", "333.836.400-86"),
+                new ClienteJuridico("Daniela", "D", "96.942.846/0001-10"),
+                new ClienteJuridico("Emanuel", "E", "25.133.454/0001-61"),
+                new ClienteJuridico("Fernanda", "F", "55.206.945/0001-56")
         };
     }
 
     public static void abrirContaParaCadaCliente(Banco banco, Cliente[] clientes) {
-        for (int i = 0; i < clientes.length; i += 3) {
-            banco.abrirConta(new ContaCorrente(clientes[i]));
+        List<Function<Cliente, Conta>> construtores = new ArrayList<>();
 
-            // Evita que um ClienteJuridico abra uma ContaPoupanca
-            banco.abrirConta(i < 6 ? new ContaPoupanca(clientes[i + 1]) : new ContaInvestimento(clientes[i + 1]));
+        construtores.add(ContaCorrente::new);
+        construtores.add(ContaPoupanca::new);
+        construtores.add(ContaInvestimento::new);
 
-            banco.abrirConta(new ContaInvestimento(clientes[i + 2]));
+        for (int i = 0; i < clientes.length; i++) {
+            try {
+                Conta novaConta = construtores.get(i % construtores.size()).apply(clientes[i]);
+                banco.abrirConta(novaConta);
+                System.out.println(clientes[i].getNome() + " (" + clientes[i].getClass().getSimpleName() +
+                        ") abriu uma nova conta (" + novaConta.getClass().getSimpleName() + ")");
+            } catch (TitularInvallidoException e) {
+                System.out.println(e.getMessage());
+            }
         }
     }
 
-    public static void testarDeposito(Conta[] contas) {
+    private static void imprimirInfoContas(Conta[] contas) {
+        int counter = 1;
 
+        for (Conta conta : contas) {
+            System.out.println("INSTÂNCIA " + counter++);
+            System.out.println("Conta: " + conta.getClass().getSimpleName());
+            System.out.println("Cliente: " + conta.getTitular().getClass().getSimpleName());
+            System.out.println("Titular: " + conta.getTitular().getNome() + "\n");
+        }
     }
 
-    public static void testarInvestimento(Conta[] contas) {
-
+    private static void imprimirCabecalho(String texto) {
+        System.out.println();
+        System.out.println("===================================================");
+        System.out.println(texto);
+        System.out.println("===================================================");
     }
 
-    public static void testarSaque(Conta[] contas) {
+    public static void testarDepositoInvestimento(Conta conta, double valor) {
+        Map<Class<?>, String> operacao = Map.of(
+            ContaPoupanca.class, "Depositando",
+            ContaCorrente.class, "Depositando",
+            ContaInvestimento.class, "Investindo"
+        );
 
+        imprimirCabecalho("TESTE DEPÓSITO/INVESTIMENTO");
+        imprimirInfoContas(new Conta[] {conta});
+
+        System.out.println("Saldo inicial: " + conta.getSaldoFormatado());
+        System.out.printf("%s R$%.2f\n", operacao.get(conta.getClass()), valor);
+        try { conta.adicionar(valor); }
+        catch (OperacaoComValorNegativoException e) { System.out.println(e.getMessage()); }
+        System.out.println("Saldo final: " + conta.getSaldoFormatado());
     }
 
-    public static void testarTransferencia(Conta[] contas) {
+    public static void testarSaque(Conta conta, double valor) {
+        imprimirCabecalho("TESTE SAQUE");
+        imprimirInfoContas(new Conta[] {conta});
 
+        System.out.println("Saldo inicial: " + conta.getSaldoFormatado());
+        System.out.printf("Sacando R$%.2f\n", valor);
+        try { conta.remover(valor); }
+        catch (SaldoInsuficienteException | OperacaoComValorNegativoException e) { System.out.println(e.getMessage()); }
+        System.out.println("Saldo final: " + conta.getSaldoFormatado());
     }
 
-    public static void test() {
-        Banco banco = new Banco();
+    public static void testarTransferencia(Conta debitado, Conta favorecido, double valor) {
+        imprimirCabecalho("TESTE TRANSFERÊMCIA");
+        imprimirInfoContas(new Conta[] {debitado, favorecido});
 
-
-        Conta[] contas = banco.getContas();
-
-        ContaCorrente corrente = (ContaCorrente) contas[0];
-        ContaPoupanca poupanca = (ContaPoupanca) contas[4];
-
-        corrente.adicionar(100.00);
-        corrente.remover(50.00);
-
-        poupanca.adicionar(100.00);
-        poupanca.remover(50.00);
-
-        System.out.println(contas[0].getSaldo());
-        System.out.println(contas[4].getSaldo());
-        contas[4].transferir(contas[0], 10.0);
-        System.out.println(contas[0].getSaldo());
-        System.out.println(contas[4].getSaldo());
-
-        ContaInvestimento investimento1 = (ContaInvestimento) contas[2];
-        ContaInvestimento investimento2 = (ContaInvestimento) contas[5];
-        ContaInvestimento investimento3 = (ContaInvestimento) contas[8];
-
-        investimento1.adicionar(100.0);
-        investimento2.adicionar(100.0);
-        investimento3.adicionar(100.0);
-        investimento3.adicionar(103.0);
-        investimento3.adicionar(106.09);
-
-        investimento1.consultarSaldo();
-        investimento2.consultarSaldo();
-        investimento3.consultarSaldo();
-
-        // Depositar e Investir são muito parecidos
-        // Investir = Adicionar dinheiro na Conta Investimento
+        System.out.println("Saldo inicial (DEBITADO): " + debitado.getSaldoFormatado());
+        System.out.println("Saldo inicial (FAVORECIDO): " + favorecido.getSaldoFormatado());
+        System.out.printf("Transferindo R$%.2f (%s para %s)\n", valor, debitado.getTitular().getNome(), favorecido.getTitular().getNome());
+        try { debitado.transferir(favorecido, valor); }
+        catch (SaldoInsuficienteException |
+               OperacaoComValorNegativoException |
+               TransferenciaParaMesmaContaException e) {
+            System.out.println(e.getMessage());
+        }
+        System.out.println("Saldo final (DEBITADO): " + debitado.getSaldoFormatado());
+        System.out.println("Saldo final (FAVORECIDO): " + favorecido.getSaldoFormatado());
     }
 }

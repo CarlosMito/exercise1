@@ -1,9 +1,7 @@
 package br.com.company.banco.contas;
 
 import br.com.company.banco.clientes.Cliente;
-import br.com.company.banco.exceptions.ContaSemTitularException;
-import br.com.company.banco.exceptions.OperacaoComValorNegativoException;
-import br.com.company.banco.exceptions.SaldoInsuficienteException;
+import br.com.company.banco.exceptions.*;
 import br.com.company.banco.interfaces.Movimentavel;
 
 import java.math.BigDecimal;
@@ -28,7 +26,7 @@ public abstract class Conta implements Movimentavel {
 
     @Override
     public void remover(BigDecimal valor) {
-        this.verificarValorNegativo(valor);
+        bloquearValorNegativo(valor);
 
         BigDecimal taxa = BigDecimal.valueOf(this.titular.getTaxaCobranca());
         valor = valor.add(valor.multiply(taxa));
@@ -46,20 +44,24 @@ public abstract class Conta implements Movimentavel {
 
     @Override
     public void transferir(Conta favorecido, BigDecimal valor) {
-        verificarValorNegativo(valor);
+        if (favorecido == this)
+            throw new TransferenciaParaMesmaContaException();
+
+        bloquearValorNegativo(valor);
 
         this.remover(valor);
         BigDecimal saldo = favorecido.getSaldo();
         favorecido.setSaldo(saldo.add(valor));
     }
 
-    protected static void verificarValorNegativo(BigDecimal valor) {
+    // Talvez trocar o nome dessa função para barrarOperacaoComValorNegativo ou algo do tipo
+    protected static void bloquearValorNegativo(BigDecimal valor) {
         if (valor.compareTo(BigDecimal.valueOf(0)) < 0)
             throw new OperacaoComValorNegativoException();
     }
 
-    public void consultarSaldo() {
-        System.out.printf("Saldo: R$%.2f\n" , this.saldo);
+    public String getSaldoFormatado() {
+        return String.format("R$%.2f", this.saldo);
     }
 
     public BigDecimal getSaldo() {

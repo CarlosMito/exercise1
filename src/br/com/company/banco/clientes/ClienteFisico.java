@@ -11,6 +11,6 @@ public class ClienteFisico extends Cliente {
         super(nome, endereco);
         this.cpf = cpf;
         this.taxaCobranca = 0.0;
-        this.taxaRendimento = 0.01;
+        this.taxaRendimento = 0.08;
     }
 }

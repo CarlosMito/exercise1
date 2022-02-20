@@ -7,6 +7,6 @@ import br.com.company.banco.contas.Conta;
 // para manter um código mais limpo, preferi deixá-la como um Unchecked Exception.
 public class TitularInvallidoException extends RuntimeException {
     public TitularInvallidoException(Cliente titular, Conta conta) {
-        super("O cliente do tipo " + titular.getClass().getSimpleName() + " não pode abrir uma conta do tipo " + conta.getClass().getSimpleName());
+        super("Um cliente do tipo " + titular.getClass().getSimpleName() + " não pode abrir uma conta do tipo " + conta.getClass().getSimpleName());
     }
 }

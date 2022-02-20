@@ -11,6 +11,8 @@ public abstract class Cliente {
         this.endereco = endereco;
     }
 
+    // TODO: Rever encapsulamento dos getters e setters de instâncias
+
     public String getNome() {
         return this.nome;
     }
