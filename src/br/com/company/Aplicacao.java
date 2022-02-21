@@ -11,9 +11,9 @@
  *   - Consulta de saldo.
  *
  * De maneira geral, não foram implementados métodos para a modificação dos elementos
- * dentro do banco. Contudo, as regras de encapsulamento foram levadas em consideração,
- * consequentemente, não é possível alterar os objetos criados de dentro da classe
- * [Aplicacao] após os mesmos serem inseridos no banco.
+ * dentro do banco, contudo, as regras de encapsulamento foram levadas em consideração.
+ * Portanto, com exceção do retorno da lista de contas e clientes pela classe Banco,
+ * os demais atributos respeitam o encapsulamento.
  *
  * As funções implementadas na classe [Aplicacao] foram criadas, exclusivamente,
  * para demonstrar as funcionalidades do banco como um todo.
@@ -43,10 +43,9 @@ import java.util.function.Function;
 
 public class Aplicacao {
     public static void main(String[] args) {
-        Banco banco = new Banco();
+        Banco banco = new Banco("Rings");
 
-        Cliente[] clientes =  gerarClientes();
-        abrirContaParaCadaCliente(banco, clientes);
+        abrirContaParaCadaCliente(banco, gerarClientes());
 
         Conta[] contas = banco.getContas();
 
@@ -167,8 +166,7 @@ public class Aplicacao {
         try {
             debitado.transferir(favorecido, valor);
             System.out.println("Operação realizada com sucesso!");
-        }
-        catch (SaldoInsuficienteException | OperacaoComValorNegativoException | TransferenciaParaMesmaContaException e) {
+        } catch (SaldoInsuficienteException | OperacaoComValorNegativoException | TransferenciaParaMesmaContaException e) {
             System.out.println("ERRO: " + e.getMessage());
         }
 

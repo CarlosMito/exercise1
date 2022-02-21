@@ -13,8 +13,6 @@ public class Banco {
     private final List<Conta> contas = new ArrayList<>();
     private final List<Cliente> clientes = new ArrayList<>();
 
-    public Banco() {}
-
     public Banco(String nome) {
         this.nome = nome;
     }
