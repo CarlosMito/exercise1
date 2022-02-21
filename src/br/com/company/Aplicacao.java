@@ -10,6 +10,11 @@
  *   - Investimento;
  *   - Consulta de saldo.
  *
+ * De maneira geral, não foram implementados métodos para a modificação dos elementos
+ * dentro do banco. Contudo, as regras de encapsulamento foram levadas em consideração,
+ * consequentemente, não é possível alterar os objetos criados de dentro da classe
+ * [Aplicacao] após os mesmos serem inseridos no banco.
+ *
  * As funções implementadas na classe [Aplicacao] foram criadas, exclusivamente,
  * para demonstrar as funcionalidades do banco como um todo.
  *
@@ -30,8 +35,6 @@ import br.com.company.banco.contas.ContaInvestimento;
 import br.com.company.banco.contas.ContaPoupanca;
 import br.com.company.banco.exceptions.*;
 
-import java.lang.instrument.Instrumentation;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -42,7 +45,8 @@ public class Aplicacao {
     public static void main(String[] args) {
         Banco banco = new Banco();
 
-        abrirContaParaCadaCliente(banco, gerarClientes());
+        Cliente[] clientes =  gerarClientes();
+        abrirContaParaCadaCliente(banco, clientes);
 
         Conta[] contas = banco.getContas();
 

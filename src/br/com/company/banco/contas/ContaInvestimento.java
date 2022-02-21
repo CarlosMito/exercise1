@@ -10,6 +10,15 @@ public class ContaInvestimento extends Conta {
         super(titular);
     }
 
+    public ContaInvestimento(ContaInvestimento original) {
+        super(original);
+    }
+
+    @Override
+    public Conta copy() {
+        return new ContaInvestimento(this);
+    }
+
     @Override
     public void adicionar(double valor) {
         this.adicionar(BigDecimal.valueOf(valor));

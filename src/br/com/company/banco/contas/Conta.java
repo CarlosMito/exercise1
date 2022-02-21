@@ -1,7 +1,6 @@
 package br.com.company.banco.contas;
 
 import br.com.company.banco.clientes.Cliente;
-import br.com.company.banco.clientes.ClienteFisico;
 import br.com.company.banco.exceptions.*;
 import br.com.company.banco.interfaces.Movimentavel;
 
@@ -15,9 +14,19 @@ public abstract class Conta implements Movimentavel {
         if (titular == null)
             throw new ContaSemTitularException();
 
-        this.titular = titular;
+        this.titular = titular.copy();
         this.saldo = BigDecimal.valueOf(0);
     }
+
+    public Conta(Conta original) {
+        // Como não é permitido a instanciação de uma Conta com o titular nulo,
+        // acredito que não seja necessário verificar isso aqui
+
+        this.titular = original.titular.copy();
+        this.saldo = original.saldo;
+    }
+
+    abstract public Conta copy();
 
     @Override
     public void remover(double valor) throws SaldoInsuficienteException {
@@ -76,20 +85,21 @@ public abstract class Conta implements Movimentavel {
         return String.format("R$%.2f", this.saldo);
     }
 
+    // Como BigDecimal e String são imutáveis, não é preciso se preocupar com os getters e setters.
     public BigDecimal getSaldo() {
         return saldo;
     }
 
-    public void setSaldo(BigDecimal saldo) {
+    protected void setSaldo(BigDecimal saldo) {
         this.saldo = saldo;
     }
 
     public Cliente getTitular() {
-        return this.titular;
+        return this.titular.copy();
     }
 
     public void setTitular(Cliente titular) {
-        this.titular = titular;
+        this.titular = titular.copy();
     }
 
     @Override

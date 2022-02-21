@@ -1,20 +1,9 @@
 package br.com.company.banco;
 
 import br.com.company.banco.clientes.Cliente;
-import br.com.company.banco.clientes.ClienteFisico;
-import br.com.company.banco.clientes.ClienteJuridico;
 import br.com.company.banco.contas.Conta;
-import br.com.company.banco.contas.ContaCorrente;
-import br.com.company.banco.contas.ContaInvestimento;
-import br.com.company.banco.contas.ContaPoupanca;
-import br.com.company.banco.exceptions.SaldoInsuficienteException;
-import br.com.company.banco.exceptions.TitularInvallidoException;
 
-import java.lang.invoke.ConstantCallSite;
-import java.lang.reflect.Constructor;
-import java.math.BigDecimal;
 import java.util.ArrayList;
-
 import java.util.List;
 import java.util.function.Predicate;
 

@@ -4,8 +4,6 @@ import br.com.company.banco.clientes.Cliente;
 import br.com.company.banco.clientes.ClienteJuridico;
 import br.com.company.banco.exceptions.TitularInvallidoException;
 
-import java.math.BigDecimal;
-
 public class ContaPoupanca extends Conta {
 
     public ContaPoupanca(Cliente titular) throws TitularInvallidoException {
@@ -15,12 +13,21 @@ public class ContaPoupanca extends Conta {
             throw new TitularInvallidoException(titular, this);
     }
 
+    public ContaPoupanca(ContaPoupanca original) {
+        super(original);
+    }
+
+    @Override
+    public Conta copy() {
+        return new ContaPoupanca(this);
+    }
+
     @Override
     public void setTitular(Cliente titular) throws TitularInvallidoException {
         if (titular instanceof ClienteJuridico)
             throw new TitularInvallidoException(titular, this);
 
-        this.titular = titular;
+        this.titular = titular.copy();
     }
 
     @Override

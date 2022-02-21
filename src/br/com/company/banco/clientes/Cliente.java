@@ -12,6 +12,21 @@ public abstract class Cliente {
         this.endereco = endereco;
     }
 
+    public Cliente(Cliente original) {
+        // Esse construtor é utilizado para criar uma cópia de [original]
+        // Tem como objetivo preservar o encapsulamento de objetos que o referenciam
+
+        this.nome = original.nome;
+        this.endereco = original.endereco;
+        this.taxaCobranca = original.taxaCobranca;
+        this.taxaRendimento = original.taxaRendimento;
+    }
+
+    // Não vou utilizar a interface Cloneable sobrescrevendo o método [Object clone()],
+    // pois vi que trás diversos problemas. Ao invés disso, irei criar um método próprio
+    // com outro assinatura, e chamar o Copy Constructor dentro dela.
+    abstract public Cliente copy();
+
     // TODO: Remover importações inúteis e adicionar comentários úteis
 
     @Override

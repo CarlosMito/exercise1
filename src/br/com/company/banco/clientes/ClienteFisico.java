@@ -1,7 +1,5 @@
 package br.com.company.banco.clientes;
 
-import java.math.BigDecimal;
-
 public class ClienteFisico extends Cliente {
     private String cpf;
 
@@ -10,6 +8,17 @@ public class ClienteFisico extends Cliente {
         this.cpf = cpf;
         this.taxaCobranca = 0.0;
         this.taxaRendimento = 0.08;
+    }
+
+    public ClienteFisico(ClienteFisico original) {
+        super(original);
+
+        this.cpf = original.cpf;
+    }
+
+    @Override
+    public Cliente copy() {
+        return new ClienteFisico(this);
     }
 
     @Override

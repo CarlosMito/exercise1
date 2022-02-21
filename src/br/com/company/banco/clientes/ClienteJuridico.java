@@ -14,6 +14,17 @@ public class ClienteJuridico extends Cliente {
         this.taxaRendimento = 0.1;
     }
 
+    public ClienteJuridico(ClienteJuridico original) {
+        super(original);
+
+        this.cnpj = original.cnpj;
+    }
+
+    @Override
+    public Cliente copy() {
+        return new ClienteJuridico(this);
+    }
+
     @Override
     public String toString() {
         return "CLIENTE JURÍDICO\n" + "CNPJ: " + this.cnpj + '\n' + super.toString();
