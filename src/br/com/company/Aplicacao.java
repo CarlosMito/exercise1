@@ -125,7 +125,7 @@ public class Aplicacao {
         imprimirCabecalho("TESTE DEPÓSITO/INVESTIMENTO");
         imprimirInfoContas(new Conta[] {conta});
 
-        System.out.println("Saldo inicial: " + conta.getSaldoFormatado() + '\b');
+        System.out.println("Saldo inicial: " + conta.getSaldoFormatado() + '\n');
         System.out.printf("%s R$%.2f\n", operacao.get(conta.getClass()), valor);
 
         try {
